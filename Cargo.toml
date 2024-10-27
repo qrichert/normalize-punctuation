@@ -11,9 +11,16 @@ keywords = ["normalize", "punctuation", "lint"]
 categories = ["command-line-utilities"]
 
 [profile.release]
+codegen-units = 1
+lto = "fat"
+panic = "abort"
 strip = true
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(tarpaulin_include)'] }
 
 [dependencies]
+# Traverse directories recursively.
+ignore = "0.4.23"
+# Get path relative to another.
+pathdiff = "0.2.2"
