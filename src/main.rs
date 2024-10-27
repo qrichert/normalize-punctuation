@@ -7,6 +7,7 @@ use std::time::Instant;
 
 use normalize_punctuation::{utils, walk};
 
+// TODO
 const PATH: &str = "/Users/Quentin/Developer/knowledge";
 
 macro_rules! plural {
