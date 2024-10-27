@@ -1,0 +1,19 @@
+[package]
+name = "normalize-punctuation"
+version = "0.1.0"
+edition = "2021"
+authors = ["Quentin Richert <noreply@richert.co>"]
+description = "Normalize punctuation in Markdown files."
+license = "MIT"
+repository = "https://github.com/qrichert/cronrunner.git"
+readme = "README.md"
+keywords = ["normalize", "punctuation", "lint"]
+categories = ["command-line-utilities"]
+
+[profile.release]
+strip = true
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(tarpaulin_include)'] }
+
+[dependencies]
