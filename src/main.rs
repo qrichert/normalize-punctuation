@@ -11,11 +11,7 @@ const PATH: &str = "/Users/Quentin/Developer/knowledge";
 
 macro_rules! plural {
     ($count:expr) => {
-        if $count == 1 {
-            ""
-        } else {
-            "s"
-        }
+        if $count == 1 { "" } else { "s" }
     };
 }
 
