@@ -29,8 +29,8 @@ To keep `NBSP`s, use explicit `&nbsp;` instead.
 
 ### As a `pre-commit` hook (recommended)
 
-To run `healthcheck` as a `pre-commit` hook, add the following to your
-`.pre-commit-config.yaml` file:
+To run `normalize-punctuation` as a `pre-commit` hook, add the following
+to your `.pre-commit-config.yaml` file:
 
 ```yaml
 - repo: https://github.com/qrichert/normalize-punctuation
