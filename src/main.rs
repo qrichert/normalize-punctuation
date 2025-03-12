@@ -1,13 +1,11 @@
 use std::cell::RefCell;
-use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Instant;
+use std::{env, fs};
 
 use normalize_punctuation::{utils, walk};
-
-const PATH: &str = "/Users/Quentin/Developer/knowledge";
 
 macro_rules! plural {
     ($count:expr) => {
@@ -18,10 +16,20 @@ macro_rules! plural {
 fn main() -> ExitCode {
     let start = Instant::now();
 
+    let Some(path) = get_path_from_args(env::args()).or_else(get_cwd) else {
+        eprintln!(
+            "\
+Could not determine current working directory.
+Please provide a directory or a file as argument.
+"
+        );
+        return ExitCode::FAILURE;
+    };
+
     let nb_files = AtomicUsize::new(0);
     let nb_modified = AtomicUsize::new(0);
 
-    walk::find_files_recursively(PATH, &["md"], |p| {
+    walk::find_files_recursively(path, &["md"], |p| {
         thread_local! {
             static BUFFER: RefCell<String> = RefCell::new(String::with_capacity(100_000))
         }
@@ -53,6 +61,14 @@ fn main() -> ExitCode {
     }
 }
 
+fn get_path_from_args(mut args: impl Iterator<Item = String>) -> Option<PathBuf> {
+    args.nth(1).map(PathBuf::from)
+}
+
+fn get_cwd() -> Option<PathBuf> {
+    env::current_dir().ok()
+}
+
 fn normalize_file(buffer: &mut String, path: &Path) -> Result<(), ()> {
     const REPLACEMENTS: [(&str, &str); 16] = [
         ("‘", "'"),
@@ -62,8 +78,8 @@ fn normalize_file(buffer: &mut String, path: &Path) -> Result<(), ()> {
         ("‚", "'"),
         ("„", "\""),
         ("…", "..."),
-        ("\u{a0}", " "),
-        // ("\u{202f}", ""),
+        ("\u{a0}", " "), // NBSP
+        // ("\u{202f}", ""), // NNBSP (narrow).
         ("« ", "\""),
         ("«", "\""),
         (" »", "\""),

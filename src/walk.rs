@@ -14,6 +14,14 @@ pub fn find_files_recursively(
         extensions.iter().any(|ext| *ext == extension)
     };
 
+    let root = root.as_ref();
+
+    // Single file.
+    if root.is_file() && does_entry_match(root) {
+        f(root);
+        return;
+    }
+
     WalkBuilder::new(root)
         .follow_links(true)
         .hidden(true)
