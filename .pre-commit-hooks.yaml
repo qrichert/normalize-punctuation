@@ -2,6 +2,6 @@
   name: normalize-punctuation
   description: "Normalize punctuation in Markdown files."
   entry: normalize-punctuation
-  types_or: [md]
+  types_or: [markdown]
   language: rust
   minimum_pre_commit_version: 3.3.3
