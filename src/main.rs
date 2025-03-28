@@ -70,11 +70,12 @@ fn get_cwd() -> Option<PathBuf> {
 }
 
 fn normalize_file(buffer: &mut String, path: &Path) -> Result<(), ()> {
-    const REPLACEMENTS: [(&str, &str); 16] = [
+    const REPLACEMENTS: [(&str, &str); 17] = [
         ("‘", "'"),
         ("’", "'"),
         ("“", "\""),
         ("”", "\""),
+        ("ˋ", "`"), // Grave accent.
         ("‚", "'"),
         ("„", "\""),
         ("…", "..."),
