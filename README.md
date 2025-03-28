@@ -8,6 +8,7 @@ _Normalize punctuation in Markdown files._
 - `’` → `'`
 - `“` → `"`
 - `”` → `"`
+- `ˋ` → `` ` ``
 - `‚` → `'`
 - `„` → `"`
 - `…` → `...`
