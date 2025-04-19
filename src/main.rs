@@ -88,7 +88,7 @@ fn normalize_file(buffer: &mut String, path: &Path) -> Result<(), ()> {
         ("‐", "-"),
         ("﹘", "-"),
         ("−", "-"),
-        ("–", "—"),
+        ("–", "-"), // en-dash.
     ];
 
     if utils::read_to_string_buffer(buffer, path).is_err() {

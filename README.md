@@ -20,7 +20,7 @@ _Normalize punctuation in Markdown files._
 - `‐` → `-`
 - `﹘` → `-`
 - `−` → `-`
-- `–` → `—`
+- `–` → `-`
 
 To keep `NBSP`s, use explicit `&nbsp;` instead.
 
