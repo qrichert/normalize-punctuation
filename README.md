@@ -1,5 +1,10 @@
 # Normalize Punctuation
 
+![Crates.io License](https://img.shields.io/crates/l/normalize-punctuation)
+![GitHub Tag](https://img.shields.io/github/v/tag/qrichert/normalize-punctuation?sort=semver&filter=*.*.*&label=release)
+[![tokei (loc)](https://tokei.rs/b1/github/qrichert/normalize-punctuation?label=loc&style=flat)](https://github.com/XAMPPRocky/tokei)
+[![crates.io](https://img.shields.io/crates/d/normalize-punctuation?logo=rust&logoColor=white&color=orange)](https://crates.io/crates/normalize-punctuation)
+
 _Normalize punctuation in Markdown files._
 
 ## Current replacements
