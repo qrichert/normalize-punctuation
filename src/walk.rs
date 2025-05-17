@@ -11,7 +11,7 @@ pub fn find_files_recursively(
         let Some(extension) = path.extension().and_then(|extension| extension.to_str()) else {
             return false;
         };
-        extensions.iter().any(|ext| *ext == extension)
+        extensions.contains(&extension)
     };
 
     let root = root.as_ref();
@@ -38,7 +38,7 @@ pub fn find_files_recursively(
                         f(path);
                         return WalkState::Continue;
                     }
-                };
+                }
                 WalkState::Skip
             })
         });
