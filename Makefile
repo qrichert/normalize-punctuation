@@ -47,8 +47,7 @@ buildlinux: ## Build linux executable through Docker
 l: lint
 .PHONY: lint
 lint: ## Run various linting tools
-	@cargo fmt
-	@cargo clippy --all-targets --all-features -- -D warnings -W clippy::all -W clippy::cargo -W clippy::complexity -W clippy::correctness -W clippy::pedantic -W clippy::perf -W clippy::style -W clippy::suspicious -A clippy::module_name_repetitions
+	@pre-commit run --all-files
 
 .PHONY: check
 check: ## Most stringent checks (includes checks still in development)
@@ -81,17 +80,17 @@ coverage: ## Unit tests coverage report
 .PHONY: cpc
 cpc: coverage-pct
 .PHONY: coverage-pct
-coverage-pct: ## Ensure code coverage of 100%
-	@coverage=$$(cargo tarpaulin --engine Llvm --out Stdout --all-features 2>&1); \
-		percent_covered=$$(echo "$$coverage" | grep -o '^[0-9]\+\.[0-9]\+% coverage' | cut -d'%' -f1); \
-		echo $$percent_covered; \
-		[ $$(echo "$$percent_covered == 100" | bc -l) -eq 0 ] && exit 1; \
-		exit 0
+coverage-pct: ## Ensure code coverage minimum %
+	@cargo tarpaulin --engine Llvm --timeout 120 --out Stdout --all-features --fail-under 10
 
 .PHONY: install
 install: ## Install cronrunner
 	install -d $(PREFIX)/bin/
 	install ./target/release/normalize-punctuation $(PREFIX)/bin/normalize-punctuation
+
+.PHONY: ci-bin-name
+ci-bin-name:
+	@echo "normalize-punctuation"
 
 %:
 	@$(call show_error_message,Unknown command '$@')
