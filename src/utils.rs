@@ -21,7 +21,7 @@ use pathdiff;
 ///     Path::new("docs/index.md")
 /// );
 #[must_use]
-pub fn path_relative_to_cwd(path: &Path) -> Cow<Path> {
+pub fn path_relative_to_cwd(path: &Path) -> Cow<'_, Path> {
     // Better some sync overhead once, than to call `env::current_dir()`
     // repeatedly.
     static CWD: OnceLock<Option<PathBuf>> = OnceLock::new();
