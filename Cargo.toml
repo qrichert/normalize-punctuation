@@ -21,6 +21,6 @@ unexpected_cfgs = { level = "warn", check-cfg = ['cfg(tarpaulin_include)'] }
 
 [dependencies]
 # Traverse directories recursively.
-ignore = "0.4.23"
+ignore = "0.4.31"
 # Get path relative to another.
 pathdiff = "0.2.3"
