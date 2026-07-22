@@ -16,34 +16,40 @@ macro_rules! plural {
 fn main() -> ExitCode {
     let start = Instant::now();
 
-    let Some(path) = get_path_from_args(env::args()).or_else(get_cwd) else {
-        eprintln!(
-            "\
+    let mut paths = get_paths_from_args(env::args());
+    if paths.is_empty() {
+        let Some(path) = get_cwd() else {
+            eprintln!(
+                "\
 Could not determine current working directory.
 Please provide a directory or a file as argument.
 "
-        );
-        return ExitCode::FAILURE;
-    };
+            );
+            return ExitCode::FAILURE;
+        };
+        paths.push(path);
+    }
 
     let nb_files = AtomicUsize::new(0);
     let nb_modified = AtomicUsize::new(0);
 
-    walk::find_files_recursively(path, &["md"], |p| {
-        thread_local! {
-            static BUFFER: RefCell<String> = RefCell::new(String::with_capacity(100_000))
-        }
+    for path in paths {
+        walk::find_files_recursively(path, &["md"], |p| {
+            thread_local! {
+                static BUFFER: RefCell<String> = RefCell::new(String::with_capacity(100_000))
+            }
 
-        nb_files.fetch_add(1, Ordering::Relaxed);
+            nb_files.fetch_add(1, Ordering::Relaxed);
 
-        if BUFFER
-            .with_borrow_mut(|buffer| normalize_file(buffer, p))
-            .is_err()
-        {
-            eprintln!("{}", utils::path_relative_to_cwd(p).display());
-            nb_modified.fetch_add(1, Ordering::Relaxed);
-        }
-    });
+            if BUFFER
+                .with_borrow_mut(|buffer| normalize_file(buffer, p))
+                .is_err()
+            {
+                eprintln!("{}", utils::path_relative_to_cwd(p).display());
+                nb_modified.fetch_add(1, Ordering::Relaxed);
+            }
+        });
+    }
 
     let nb_files = nb_files.into_inner();
     let nb_modified = nb_modified.into_inner();
@@ -61,8 +67,8 @@ Please provide a directory or a file as argument.
     }
 }
 
-fn get_path_from_args(mut args: impl Iterator<Item = String>) -> Option<PathBuf> {
-    args.nth(1).map(PathBuf::from)
+fn get_paths_from_args(args: impl Iterator<Item = String>) -> Vec<PathBuf> {
+    args.skip(1).map(PathBuf::from).collect()
 }
 
 fn get_cwd() -> Option<PathBuf> {
