@@ -33,23 +33,21 @@ Please provide a directory or a file as argument.
     let nb_files = AtomicUsize::new(0);
     let nb_modified = AtomicUsize::new(0);
 
-    for path in paths {
-        walk::find_files_recursively(path, &["md"], |p| {
-            thread_local! {
-                static BUFFER: RefCell<String> = RefCell::new(String::with_capacity(100_000))
-            }
+    walk::find_files_recursively_many(paths, &["md"], |p| {
+        thread_local! {
+            static BUFFER: RefCell<String> = RefCell::new(String::with_capacity(100_000))
+        }
 
-            nb_files.fetch_add(1, Ordering::Relaxed);
+        nb_files.fetch_add(1, Ordering::Relaxed);
 
-            if BUFFER
-                .with_borrow_mut(|buffer| normalize_file(buffer, p))
-                .is_err()
-            {
-                eprintln!("{}", utils::path_relative_to_cwd(p).display());
-                nb_modified.fetch_add(1, Ordering::Relaxed);
-            }
-        });
-    }
+        if BUFFER
+            .with_borrow_mut(|buffer| normalize_file(buffer, p))
+            .is_err()
+        {
+            eprintln!("{}", utils::path_relative_to_cwd(p).display());
+            nb_modified.fetch_add(1, Ordering::Relaxed);
+        }
+    });
 
     let nb_files = nb_files.into_inner();
     let nb_modified = nb_modified.into_inner();
