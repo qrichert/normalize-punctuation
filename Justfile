@@ -55,7 +55,7 @@ coverage:
 alias cpc := coverage-pct
 # Ensure code coverage minimum %
 coverage-pct:
-    cargo tarpaulin --engine Llvm --timeout 120 --out Stdout --all-features --fail-under 10
+    cargo tarpaulin --engine Llvm --timeout 120 --out Stdout --all-features --fail-under 95
 
 # Install `normalize-punctuation`
 install:
