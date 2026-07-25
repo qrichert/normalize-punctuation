@@ -16,7 +16,15 @@ macro_rules! plural {
 fn main() -> ExitCode {
     let start = Instant::now();
 
-    let mut paths = get_paths_from_args(env::args());
+    let mut paths = Vec::new();
+    for arg in env::args().skip(1) {
+        if arg == "-V" || arg == "--version" {
+            println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+            return ExitCode::SUCCESS;
+        }
+        paths.push(PathBuf::from(arg));
+    }
+
     if paths.is_empty() {
         let Some(path) = get_cwd() else {
             eprintln!(
@@ -63,10 +71,6 @@ Please provide a directory or a file as argument.
     } else {
         ExitCode::FAILURE
     }
-}
-
-fn get_paths_from_args(args: impl Iterator<Item = String>) -> Vec<PathBuf> {
-    args.skip(1).map(PathBuf::from).collect()
 }
 
 fn get_cwd() -> Option<PathBuf> {

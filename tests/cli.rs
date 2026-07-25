@@ -31,6 +31,23 @@ impl Drop for TempDir {
 }
 
 #[test]
+fn version_flags_print_package_version() {
+    for flag in ["--version", "-V"] {
+        let output = Command::new(env!("CARGO_BIN_EXE_normalize-punctuation"))
+            .arg(flag)
+            .output()
+            .expect("normalize-punctuation should run");
+
+        assert!(output.status.success());
+        assert_eq!(
+            String::from_utf8(output.stdout).expect("stdout should be UTF-8"),
+            format!("{} {}\n", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"))
+        );
+        assert!(output.stderr.is_empty());
+    }
+}
+
+#[test]
 fn normalizes_every_path_argument() {
     let temp_dir = TempDir::new();
     let clean = temp_dir.0.join("clean.md");
