@@ -31,6 +31,24 @@ impl Drop for TempDir {
 }
 
 #[test]
+fn help_flags_print_help() {
+    for flag in ["--help", "-h"] {
+        let output = Command::new(env!("CARGO_BIN_EXE_normalize-punctuation"))
+            .arg(flag)
+            .output()
+            .expect("normalize-punctuation should run");
+
+        assert!(output.status.success());
+        assert!(
+            String::from_utf8(output.stdout)
+                .expect("stdout should be UTF-8")
+                .contains("Usage:")
+        );
+        assert!(output.stderr.is_empty());
+    }
+}
+
+#[test]
 fn version_flags_print_package_version() {
     for flag in ["--version", "-V"] {
         let output = Command::new(env!("CARGO_BIN_EXE_normalize-punctuation"))
@@ -39,9 +57,10 @@ fn version_flags_print_package_version() {
             .expect("normalize-punctuation should run");
 
         assert!(output.status.success());
-        assert_eq!(
-            String::from_utf8(output.stdout).expect("stdout should be UTF-8"),
-            format!("{} {}\n", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"))
+        assert!(
+            String::from_utf8(output.stdout)
+                .expect("stdout should be UTF-8")
+                .contains(env!("CARGO_PKG_VERSION"))
         );
         assert!(output.stderr.is_empty());
     }

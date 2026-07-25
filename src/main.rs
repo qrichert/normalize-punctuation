@@ -18,8 +18,12 @@ fn main() -> ExitCode {
 
     let mut paths = Vec::new();
     for arg in env::args().skip(1) {
+        if arg == "-h" || arg == "--help" {
+            print!("{}", help_message());
+            return ExitCode::SUCCESS;
+        }
         if arg == "-V" || arg == "--version" {
-            println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+            println!("{}", version_message());
             return ExitCode::SUCCESS;
         }
         paths.push(PathBuf::from(arg));
@@ -73,6 +77,29 @@ Please provide a directory or a file as argument.
     }
 }
 
+fn help_message() -> String {
+    format!(
+        "\
+{description}
+
+Usage: {bin} [OPTIONS] [PATH ...]
+
+Arguments:
+  [PATH ...]  Markdown files or directories to scan [default: current directory]
+
+Options:
+  -h, --help       Show this message and exit.
+  -V, --version    Show the version and exit.
+",
+        description = env!("CARGO_PKG_DESCRIPTION"),
+        bin = env!("CARGO_BIN_NAME"),
+    )
+}
+
+fn version_message() -> String {
+    format!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"))
+}
+
 fn get_cwd() -> Option<PathBuf> {
     env::current_dir().ok()
 }
@@ -88,5 +115,30 @@ fn normalize_file(buffer: &mut String, path: &Path) -> Result<(), ()> {
             Err(())
         }
         None => Ok(()),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn help_message_contains_binary_name_and_options() {
+        let message = help_message();
+
+        assert!(message.contains(&format!(
+            "Usage: {} [OPTIONS] [PATH ...]",
+            env!("CARGO_BIN_NAME")
+        )));
+        assert!(message.contains("-h, --help"));
+        assert!(message.contains("-V, --version"));
+    }
+
+    #[test]
+    fn version_message_contains_package_name_and_version() {
+        assert_eq!(
+            version_message(),
+            format!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"))
+        );
     }
 }

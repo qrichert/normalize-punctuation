@@ -7,6 +7,21 @@
 
 _Normalize punctuation in Markdown files._
 
+## Get `--help`
+
+```
+Normalize punctuation in Markdown files.
+
+Usage: normalize-punctuation [OPTIONS] [PATH ...]
+
+Arguments:
+  [PATH ...]  Markdown files or directories to scan [default: current directory]
+
+Options:
+  -h, --help       Show this message and exit.
+  -V, --version    Show the version and exit.
+```
+
 ## Current replacements
 
 - `‘` → `'`
