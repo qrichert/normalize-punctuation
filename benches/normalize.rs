@@ -18,10 +18,10 @@ use normalize_punctuation::normalize::normalize_str;
 const BASE: &str =
     "The quick brown fox jumps over the lazy dog near the quiet riverbank as autumn leaves fall.\n";
 
-/// The 23 exotic-punctuation patterns `normalize_str` rewrites. Kept in
+/// The exotic-punctuation patterns `normalize_str` rewrites. Kept in
 /// step with `REPLACEMENTS` in `src/normalize.rs`; drift here only
 /// affects the shape of the benchmark inputs, never correctness.
-const DIRTY: [&str; 23] = [
+const DIRTY: &[&str] = &[
     "‘",
     "’",
     "“",
@@ -30,6 +30,14 @@ const DIRTY: [&str; 23] = [
     "‚",
     "„",
     "…",
+    "« ",
+    "«\u{a0}",
+    "«\u{202f}",
+    "«\u{2009}",
+    " »",
+    "\u{a0}»",
+    "\u{202f}»",
+    "\u{2009}»",
     "\u{a0}",
     "\u{202f}",
     "\u{2009};",
@@ -37,9 +45,7 @@ const DIRTY: [&str; 23] = [
     "\u{2009}!",
     "\u{2009}:",
     "\u{2009}",
-    "« ",
     "«",
-    " »",
     "»",
     "‐",
     "﹘",
@@ -58,9 +64,8 @@ fn clean(size: usize) -> String {
 }
 
 /// Dirty input of ~`size` bytes: pre-seed one occurrence of each of the
-/// 23 patterns (full arm coverage even at 1 KB), then inject a pattern
-/// roughly every `stride` bytes, round-robin. Fully deterministic
-/// (no RNG).
+/// patterns (full arm coverage even at 1 KB), then inject a pattern roughly
+/// every `stride` bytes, round-robin. Fully deterministic (no RNG).
 fn dirty(size: usize, stride: usize) -> String {
     let mut s = String::with_capacity(size + 128);
     for pattern in DIRTY {

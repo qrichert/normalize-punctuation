@@ -9,7 +9,7 @@ use aho_corasick::{AhoCorasick, MatchKind};
 /// Order is significant: at a shared start position the earlier entry
 /// wins (e.g. `"\u{2009};"` before `"\u{2009}"` and `"« "` before
 /// `"«"`), so context-specific forms take precedence over bare ones.
-const REPLACEMENTS: [(&str, &str); 23] = [
+const REPLACEMENTS: &[(&str, &str)] = &[
     ("‘", "'"),
     ("’", "'"),
     ("“", "\""),
@@ -18,6 +18,14 @@ const REPLACEMENTS: [(&str, &str); 23] = [
     ("‚", "'"),
     ("„", "\""),
     ("…", "..."),
+    ("« ", "\""),
+    ("«\u{a0}", "\""),
+    ("«\u{202f}", "\""),
+    ("«\u{2009}", "\""),
+    (" »", "\""),
+    ("\u{a0}»", "\""),
+    ("\u{202f}»", "\""),
+    ("\u{2009}»", "\""),
     ("\u{a0}", "&nbsp;"),      // NBSP.
     ("\u{202f}", "&#8239;"),   // NNBSP.
     ("\u{2009};", "&#8239;;"), // Thin space before French punctuation.
@@ -25,9 +33,7 @@ const REPLACEMENTS: [(&str, &str); 23] = [
     ("\u{2009}!", "&#8239;!"),
     ("\u{2009}:", "&nbsp;:"),
     ("\u{2009}", "&thinsp;"), // Thin space.
-    ("« ", "\""),
     ("«", "\""),
-    (" »", "\""),
     ("»", "\""),
     ("‐", "-"),
     ("﹘", "-"),
@@ -93,7 +99,7 @@ mod tests {
     fn each_replacement_is_applied() {
         // Embedding a pattern between plain ASCII isolates it: bare guillemets
         // have no trailing/leading space, and the space forms carry their own.
-        for (pattern, replacement) in REPLACEMENTS {
+        for &(pattern, replacement) in REPLACEMENTS {
             let input = format!("a{pattern}b");
             let expected = format!("a{replacement}b");
             assert_eq!(
@@ -105,15 +111,15 @@ mod tests {
     }
 
     #[test]
-    fn left_guillemet_with_space_drops_the_space() {
-        // Pins `LeftmostFirst`: "« " (with space) wins over bare "«" at the
-        // shared start position, so the inner space is dropped.
-        assert_eq!(normalize_str("« x").as_deref(), Some("\"x"));
-    }
-
-    #[test]
-    fn right_guillemet_with_space_drops_the_space() {
-        assert_eq!(normalize_str("x »").as_deref(), Some("x\""));
+    fn guillemets_drop_inner_spaces() {
+        for space in [" ", "\u{a0}", "\u{202f}", "\u{2009}"] {
+            let input = format!("«{space}text{space}»");
+            assert_eq!(
+                normalize_str(&input).as_deref(),
+                Some("\"text\""),
+                "inner space {space:?} should be dropped"
+            );
+        }
     }
 
     #[test]

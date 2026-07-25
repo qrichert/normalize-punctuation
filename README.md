@@ -65,9 +65,9 @@ Markdown-aware exceptions.
 - `THIN SPACE` (`U+2009`) before `;`, `?`, or `!` → `&#8239;`
 - `THIN SPACE` (`U+2009`) before `:` → `&nbsp;`
 - `THIN SPACE` (`U+2009`) otherwise → `&thinsp;`
-- `« ` → `"`
+- `«` followed by `SPACE`, `NBSP`, `NNBSP`, or `THIN SPACE` → `"`
 - `«` → `"`
-- ` »` → `"`
+- `»` preceded by `SPACE`, `NBSP`, `NNBSP`, or `THIN SPACE` → `"`
 - `»` → `"`
 - `‐` → `-`
 - `﹘` → `-`
