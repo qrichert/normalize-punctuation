@@ -5,12 +5,12 @@
 [![crates.io](https://img.shields.io/crates/d/normalize-punctuation?logo=rust&logoColor=white&color=orange)](https://crates.io/crates/normalize-punctuation)
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/qrichert/normalize-punctuation/ci.yml?label=tests)](https://github.com/qrichert/normalize-punctuation/actions)
 
-_Normalize punctuation in Markdown files._
+_A highly opinionated punctuation normalizer for Markdown files._
 
 ## Get `--help`
 
 ```
-Normalize punctuation in Markdown files.
+A highly opinionated punctuation normalizer for Markdown files.
 
 Usage: normalize-punctuation [OPTIONS] [PATH ...]
 
@@ -21,6 +21,34 @@ Options:
   -h, --help       Show this message and exit.
   -V, --version    Show the version and exit.
 ```
+
+## Philosophy
+
+This tool canonicalizes Markdown source; it is not a typesetting engine.
+
+Typographic punctuation variants are normalized to keyboard-friendly
+ASCII. The inverse transformation is deliberately not attempted:
+choosing the right curly quote or apostrophe requires linguistic context
+that cannot be reliably inferred from Markdown alone.
+
+Unicode spaces are handled differently because their width and
+line-breaking behavior carry meaning. NBSP, NNBSP, thin space, and
+regular space can be indistinguishable in ordinary editors, and their
+rendered differences are often difficult to spot. Replacing Unicode
+spaces with explicit HTML character references makes them visible in
+source and diffs, giving authors and reviewers a chance to identify and
+fix unintended spacing.
+
+The tool never inserts spaces. It only rewrites spaces already present
+in the source. An existing thin space before `;`, `?`, or `!` becomes a
+narrow non-breaking space; one before `:` becomes a non-breaking space,
+following French (France) conventions. Text without such a space, such
+as `Hello!`, is left unchanged.
+
+Normalization is text-based and also applies inside Markdown code spans
+and code blocks. This is an intentional scope tradeoff: those cases are
+rare, and the tool favors simple, consistent normalization over
+Markdown-aware exceptions.
 
 ## Current replacements
 

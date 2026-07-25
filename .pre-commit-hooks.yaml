@@ -1,6 +1,6 @@
 - id: normalize-punctuation
   name: normalize-punctuation
-  description: "Normalize punctuation in Markdown files."
+  description: "A highly opinionated punctuation normalizer for Markdown files."
   entry: normalize-punctuation
   types_or: [markdown]
   language: rust
