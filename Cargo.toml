@@ -20,7 +20,16 @@ strip = true
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(tarpaulin_include)'] }
 
 [dependencies]
+# Single-pass multi-pattern search/replace.
+aho-corasick = "1.1.4"
 # Traverse directories recursively.
 ignore = "0.4.31"
 # Get path relative to another.
 pathdiff = "0.2.3"
+
+[dev-dependencies]
+criterion = "0.8.2"
+
+[[bench]]
+name = "normalize"
+harness = false

@@ -5,7 +5,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Instant;
 use std::{env, fs};
 
-use normalize_punctuation::{utils, walk};
+use normalize_punctuation::{normalize, utils, walk};
 
 macro_rules! plural {
     ($count:expr) => {
@@ -74,56 +74,15 @@ fn get_cwd() -> Option<PathBuf> {
 }
 
 fn normalize_file(buffer: &mut String, path: &Path) -> Result<(), ()> {
-    const REPLACEMENTS: [(&str, &str); 17] = [
-        ("‘", "'"),
-        ("’", "'"),
-        ("“", "\""),
-        ("”", "\""),
-        ("ˋ", "`"), // Grave accent.
-        ("‚", "'"),
-        ("„", "\""),
-        ("…", "..."),
-        ("\u{a0}", " "), // NBSP
-        // ("\u{202f}", ""), // NNBSP (narrow).
-        ("« ", "\""),
-        ("«", "\""),
-        (" »", "\""),
-        ("»", "\""),
-        ("‐", "-"),
-        ("﹘", "-"),
-        ("−", "-"),
-        ("–", "-"), // en-dash.
-    ];
-
     if utils::read_to_string_buffer(buffer, path).is_err() {
         return Err(());
     }
 
-    // `replace()` allocates a new `String`. Leave `normalized` empty
-    // (i.e., don't allocate) unless we _know_ we need to (replacement).
-    let mut normalized = String::new();
-    let mut modified = false;
-
-    for (pattern, replacement) in REPLACEMENTS {
-        if modified {
-            // Use already-normalized version.
-            if normalized.contains(pattern) {
-                normalized = normalized.replace(pattern, replacement);
-            }
-        } else {
-            // Reuse unchanged buffer.
-            if buffer.contains(pattern) {
-                // Delegate to `normalized`.
-                normalized = buffer.replace(pattern, replacement);
-                modified = true;
-            }
+    match normalize::normalize_str(buffer) {
+        Some(normalized) => {
+            _ = fs::write(path, normalized);
+            Err(())
         }
-    }
-
-    if modified {
-        _ = fs::write(path, normalized);
-        Err(())
-    } else {
-        Ok(())
+        None => Ok(()),
     }
 }
