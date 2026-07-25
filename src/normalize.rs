@@ -7,9 +7,9 @@ use aho_corasick::{AhoCorasick, MatchKind};
 /// Ordered list of punctuation patterns and their ASCII replacements.
 ///
 /// Order is significant: at a shared start position the earlier entry
-/// wins (e.g. `"« "` before `"«"`), so the space-consuming guillemet
-/// forms take precedence over the bare ones.
-const REPLACEMENTS: [(&str, &str); 17] = [
+/// wins (e.g. `"\u{2009};"` before `"\u{2009}"` and `"« "` before
+/// `"«"`), so context-specific forms take precedence over bare ones.
+const REPLACEMENTS: [(&str, &str); 23] = [
     ("‘", "'"),
     ("’", "'"),
     ("“", "\""),
@@ -18,8 +18,13 @@ const REPLACEMENTS: [(&str, &str); 17] = [
     ("‚", "'"),
     ("„", "\""),
     ("…", "..."),
-    ("\u{a0}", " "), // NBSP
-    // ("\u{202f}", ""), // NNBSP (narrow).
+    ("\u{a0}", "&nbsp;"),      // NBSP.
+    ("\u{202f}", "&#8239;"),   // NNBSP.
+    ("\u{2009};", "&#8239;;"), // Thin space before French punctuation.
+    ("\u{2009}?", "&#8239;?"),
+    ("\u{2009}!", "&#8239;!"),
+    ("\u{2009}:", "&nbsp;:"),
+    ("\u{2009}", "&thinsp;"), // Thin space.
     ("« ", "\""),
     ("«", "\""),
     (" »", "\""),
@@ -33,9 +38,8 @@ const REPLACEMENTS: [(&str, &str); 17] = [
 /// Automaton over the `REPLACEMENTS` patterns, built once per process.
 ///
 /// `MatchKind::LeftmostFirst` makes an earlier-listed pattern win at a
-/// shared start position, so `"« "` takes precedence over `"«"` and the
-/// inner space is dropped — matching the previous sequential-`replace`
-/// behavior (see tests).
+/// shared start position, so context-specific patterns take precedence
+/// over their shorter forms (see tests).
 static AUTOMATON: LazyLock<AhoCorasick> = LazyLock::new(|| {
     AhoCorasick::builder()
         .match_kind(MatchKind::LeftmostFirst)
@@ -110,6 +114,14 @@ mod tests {
     #[test]
     fn right_guillemet_with_space_drops_the_space() {
         assert_eq!(normalize_str("x »").as_deref(), Some("x\""));
+    }
+
+    #[test]
+    fn thin_space_uses_non_breaking_entities_before_french_punctuation() {
+        assert_eq!(
+            normalize_str("\u{2009};\u{2009}?\u{2009}!\u{2009}:\u{2009}x").as_deref(),
+            Some("&#8239;;&#8239;?&#8239;!&nbsp;:&thinsp;x")
+        );
     }
 
     #[test]

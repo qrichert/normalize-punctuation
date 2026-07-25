@@ -32,7 +32,11 @@ Options:
 - `‚` → `'`
 - `„` → `"`
 - `…` → `...`
-- `NBSP` → ` `
+- `NBSP` (`U+00A0`) → `&nbsp;`
+- `NNBSP` (`U+202F`) → `&#8239;`
+- `THIN SPACE` (`U+2009`) before `;`, `?`, or `!` → `&#8239;`
+- `THIN SPACE` (`U+2009`) before `:` → `&nbsp;`
+- `THIN SPACE` (`U+2009`) otherwise → `&thinsp;`
 - `« ` → `"`
 - `«` → `"`
 - ` »` → `"`
@@ -41,10 +45,6 @@ Options:
 - `﹘` → `-`
 - `−` → `-`
 - `–` → `-`
-
-To keep `NBSP`s, use explicit `&nbsp;` instead.
-
-<!-- - `NNBSP` → `` -->
 
 ## Installation
 

@@ -94,7 +94,7 @@ fn normalizes_every_path_argument() {
 
 #[test]
 fn normalizes_every_supported_replacement_recursively() {
-    const REPLACEMENTS: [(&str, &str); 17] = [
+    const REPLACEMENTS: [(&str, &str); 23] = [
         ("‘", "'"),
         ("’", "'"),
         ("“", "\""),
@@ -103,7 +103,13 @@ fn normalizes_every_supported_replacement_recursively() {
         ("‚", "'"),
         ("„", "\""),
         ("…", "..."),
-        ("\u{a0}", " "),
+        ("\u{a0}", "&nbsp;"),
+        ("\u{202f}", "&#8239;"),
+        ("\u{2009};", "&#8239;;"),
+        ("\u{2009}?", "&#8239;?"),
+        ("\u{2009}!", "&#8239;!"),
+        ("\u{2009}:", "&nbsp;:"),
+        ("\u{2009}", "&thinsp;"),
         ("« ", "\""),
         ("«", "\""),
         (" »", "\""),
@@ -148,7 +154,7 @@ fn normalizes_every_supported_replacement_recursively() {
     assert!(
         String::from_utf8(output.stdout)
             .expect("stdout should be UTF-8")
-            .starts_with("Scanned 17 files, modified 17. (")
+            .starts_with("Scanned 23 files, modified 23. (")
     );
 }
 
