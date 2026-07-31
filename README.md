@@ -96,10 +96,12 @@ Install from [crates.io] with Cargo:
 cargo install normalize-punctuation
 ```
 
-Pre-built binaries for Linux and macOS are available on the [latest GitHub release].
+Pre-built binaries for Linux and macOS are available on the [latest
+GitHub release].
 
 [Documentation] is available on docs.rs.
 
 [crates.io]: https://crates.io/crates/normalize-punctuation
-[latest GitHub release]: https://github.com/qrichert/normalize-punctuation/releases/latest
+[latest GitHub release]:
+  https://github.com/qrichert/normalize-punctuation/releases/latest
 [Documentation]: https://docs.rs/normalize-punctuation
