@@ -90,8 +90,16 @@ to your `.pre-commit-config.yaml` file:
 
 ### As a standalone executable
 
+Install from [crates.io] with Cargo:
+
 ```shell
-cargo install --locked --git https://github.com/qrichert/normalize-punctuation.git
+cargo install normalize-punctuation
 ```
 
-Use the same command to update `normalize-punctuation`.
+Pre-built binaries for Linux and macOS are available on the [latest GitHub release].
+
+[Documentation] is available on docs.rs.
+
+[crates.io]: https://crates.io/crates/normalize-punctuation
+[latest GitHub release]: https://github.com/qrichert/normalize-punctuation/releases/latest
+[Documentation]: https://docs.rs/normalize-punctuation

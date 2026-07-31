@@ -7,8 +7,8 @@ description = "A highly opinionated punctuation normalizer for Markdown files."
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/qrichert/normalize-punctuation.git"
 readme = "README.md"
-keywords = ["normalize", "punctuation", "lint"]
-categories = ["command-line-utilities"]
+keywords = ["markdown", "punctuation", "unicode", "pre-commit", "typography"]
+categories = ["command-line-utilities", "text-processing", "development-tools"]
 
 [profile.release]
 codegen-units = 1
