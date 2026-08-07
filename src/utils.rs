@@ -20,6 +20,7 @@ use pathdiff;
 ///     path_relative_to_cwd(file),
 ///     Path::new("docs/index.md")
 /// );
+/// ```
 #[must_use]
 pub fn path_relative_to_cwd(path: &Path) -> Cow<'_, Path> {
     // Better some sync overhead once, than to call `env::current_dir()`

@@ -67,7 +67,7 @@ pub fn find_files_recursively_many(
                     return WalkState::Continue;
                 }
             }
-            WalkState::Skip
+            WalkState::Continue
         })
     });
 }
