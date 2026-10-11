@@ -7,6 +7,11 @@
 
 _A highly opinionated punctuation normalizer for Markdown files._
 
+I'm often copy-pasting lots of stuff from different sources into
+Markdown files, and the differences in typography conventions trigger my
+OCD. Normalization may seem drastic and locally worse, but it works well
+at enforcing surprise-free global consistency.
+
 ## Get `--help`
 
 ```
@@ -21,6 +26,51 @@ Options:
   -h, --help       Show this message and exit.
   -V, --version    Show the version and exit.
 ```
+
+## Current replacements
+
+- `‘` → `'`
+- `’` → `'`
+- `“` → `"`
+- `”` → `"`
+- `ˋ` → `` ` ``
+- `‚` → `'`
+- `„` → `"`
+- `…` → `...`
+- `NBSP` (`U+00A0`) → `&nbsp;`
+- `NNBSP` (`U+202F`) → `&#8239;`
+- `THIN SPACE` (`U+2009`) before `;`, `?`, or `!` → `&#8239;`
+- `THIN SPACE` (`U+2009`) before `:` → `&nbsp;`
+- `THIN SPACE` (`U+2009`) otherwise → `&thinsp;`
+- `«` followed by `SPACE`, `NBSP`, `NNBSP`, or `THIN SPACE` → `"`
+- `«` → `"`
+- `»` preceded by `SPACE`, `NBSP`, `NNBSP`, or `THIN SPACE` → `"`
+- `»` → `"`
+- `‐` → `-`
+- `﹘` → `-`
+- `−` → `-`
+- `–` → `-`
+
+## Workarounds
+
+In certain contexts you may want to preserve certain characters. For
+that, use explicit HTML entities:
+
+- `’` `&rsquo;`
+- `‘` → `&lsquo;`
+- `’` → `&rsquo;`
+- `“` → `&ldquo;`
+- `”` → `&rdquo;`
+- `ˋ` → `&#x02CB;`
+- `‚` → `&sbquo;`
+- `„` → `&bdquo;`
+- `…` → `&hellip;`
+- `«` → `&laquo;`
+- `»` → `&raquo;`
+- `‐` → `&#x2010;`
+- `﹘` → `&#xFE58;`
+- `−` → `&minus;`
+- `–` → `&ndash;`
 
 ## Philosophy
 
@@ -49,30 +99,6 @@ Normalization is text-based and also applies inside Markdown code spans
 and code blocks. This is an intentional scope tradeoff: those cases are
 rare, and the tool favors simple, consistent normalization over
 Markdown-aware exceptions.
-
-## Current replacements
-
-- `‘` → `'`
-- `’` → `'`
-- `“` → `"`
-- `”` → `"`
-- `ˋ` → `` ` ``
-- `‚` → `'`
-- `„` → `"`
-- `…` → `...`
-- `NBSP` (`U+00A0`) → `&nbsp;`
-- `NNBSP` (`U+202F`) → `&#8239;`
-- `THIN SPACE` (`U+2009`) before `;`, `?`, or `!` → `&#8239;`
-- `THIN SPACE` (`U+2009`) before `:` → `&nbsp;`
-- `THIN SPACE` (`U+2009`) otherwise → `&thinsp;`
-- `«` followed by `SPACE`, `NBSP`, `NNBSP`, or `THIN SPACE` → `"`
-- `«` → `"`
-- `»` preceded by `SPACE`, `NBSP`, `NNBSP`, or `THIN SPACE` → `"`
-- `»` → `"`
-- `‐` → `-`
-- `﹘` → `-`
-- `−` → `-`
-- `–` → `-`
 
 ## Installation
 
